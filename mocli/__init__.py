@@ -27,16 +27,19 @@ class CommandLineInterface:
     ]
 
     def __init__(self, builder: Builder) -> None:
-        self.cmd = Cmd()
-        self.cmd.prompt = builder._prompt
+        self._cmd = Cmd()
+        self._cmd.prompt = builder._prompt
         for command in CommandLineInterface.default_commands:
-            setattr(self.cmd, f'do_{command.name}', command.fn)
+            setattr(self._cmd, f'do_{command.name}', command.fn)
         for command in builder._commands:
-            setattr(self.cmd, f'do_{command.name}', command.fn)
+            setattr(self._cmd, f'do_{command.name}', command.fn)
 
     @staticmethod
     def builder(prompt: str = default_prompt) -> Builder:
         return CommandLineInterface.Builder(prompt)
+    
+    def loop(self):
+        self._cmd.cmdloop()
 
     class Builder:
 
