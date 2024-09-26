@@ -6,7 +6,7 @@ class Command(abc.ABC):
 
     def __init__(self, name: str, fn: Callable) -> None:
         self.name = name
-        self.fn = Command.executable(fn)
+        self.fn = fn
 
     @staticmethod
     def executable(fn) -> Callable[[str], bool]:

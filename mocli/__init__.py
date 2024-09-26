@@ -14,19 +14,21 @@ class Cmd(cmd.Cmd):
         # including the dynamically added
         return dir(self)
 
-    def do_exit(self, arg):
-        print("bye")
-        return True
-
     def preloop(self):
         return self.do_help(None)
 
 
 class CommandLineInterface:
 
+    builtin_commands = [
+        Command(name='exit', fn=lambda arg: True),
+    ]
+
     def __init__(self, builder: Builder) -> None:
         self.cmd = Cmd()
         self.cmd.prompt = builder._prompt
+        for command in CommandLineInterface.builtin_commands:
+            setattr(self.cmd, f'do_{command.name}', command.fn)
         for command in builder._commands:
             setattr(self.cmd, f'do_{command.name}', command.fn)
 

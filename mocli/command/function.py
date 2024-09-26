@@ -5,4 +5,4 @@ from typing import Callable
 class Function(Command):
 
     def __init__(self, name: str, fn: Callable) -> None:
-        super().__init__(name, fn)
+        super().__init__(name, Command.executable(fn))
