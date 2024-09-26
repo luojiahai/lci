@@ -4,17 +4,10 @@ from typing import List
 from mocli.command import Command
 
 
-class CommandLineInterface(cmd.Cmd):
+class Cmd(cmd.Cmd):
 
-    def __init__(self, builder: Builder) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.prompt = builder._prompt
-        for command in builder._commands:
-            setattr(self, f'do_{command.name}', command.fn)
-
-    @staticmethod
-    def builder(prompt: str = '(mocli) ') -> Builder:
-        return CommandLineInterface.Builder(prompt)
 
     def get_names(self):
         # This returns a list of all methods of the class
@@ -26,7 +19,20 @@ class CommandLineInterface(cmd.Cmd):
         return True
 
     def preloop(self):
-        return self.do_help('')
+        return self.do_help(None)
+
+
+class CommandLineInterface:
+
+    def __init__(self, builder: Builder) -> None:
+        self.cmd = Cmd()
+        self.cmd.prompt = builder._prompt
+        for command in builder._commands:
+            setattr(self.cmd, f'do_{command.name}', command.fn)
+
+    @staticmethod
+    def builder(prompt: str = '(mocli) ') -> Builder:
+        return CommandLineInterface.Builder(prompt)
 
     class Builder:
 

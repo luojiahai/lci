@@ -12,4 +12,4 @@ if __name__ == '__main__':
         builder.command(function)
         builder.command(subprocess)
 
-    builder.build().cmdloop()
+    builder.build().cmd.cmdloop()
