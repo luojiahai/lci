@@ -1,13 +1,8 @@
 from __future__ import annotations
 import cmd
-from typing import Callable, List, Self
-
-
-class Command:
-
-    def __init__(self, name: str, fn: Callable) -> None:
-        self.name = name
-        self.fn = fn
+from typing import List, Self
+from mocli.command import Command, commandfn
+from mocli.command.shell import Shell
 
 
 class CommandLineInterface(cmd.Cmd):
@@ -44,17 +39,25 @@ class CommandLineInterface(cmd.Cmd):
             self._prompt = prompt
             return self
 
-        def command(self, name: str, fn: Callable) -> Self:
-            self._commands.append(Command(name, fn))
+        def command(self, command: Command) -> Self:
+            self._commands.append(command)
             return self
 
         def build(self) -> CommandLineInterface:
             return CommandLineInterface(self)
 
 
+@commandfn
+def hello_fn(arg):
+    print("Hello, world! " + arg)
+
+
 def run():
+    hello = Command('hello', hello_fn)
+    shell = Shell('ls', 'ls -la')
     cli = CommandLineInterface.builder() \
         .prompt("(my-cli) ") \
-        .command('hello', lambda arg: print("Hello, world!")) \
+        .command(hello) \
+        .command(shell) \
         .build()
     cli.cmdloop()
