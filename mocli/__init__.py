@@ -1,8 +1,8 @@
 from __future__ import annotations
 import cmd
-from typing import List, Self
-from mocli.command import Command, commandfn
-from mocli.command.shell import Shell
+from typing import List
+from mocli.command import Command
+from mocli.command.shell import Subprocess
 
 
 class CommandLineInterface(cmd.Cmd):
@@ -14,8 +14,8 @@ class CommandLineInterface(cmd.Cmd):
             setattr(self, f'do_{command.name}', command.fn)
 
     @staticmethod
-    def builder() -> Builder:
-        return CommandLineInterface.Builder()
+    def builder(prompt: str = '(mocli) ') -> Builder:
+        return CommandLineInterface.Builder(prompt)
 
     def get_names(self):
         # This returns a list of all methods of the class
@@ -31,33 +31,31 @@ class CommandLineInterface(cmd.Cmd):
 
     class Builder:
 
-        def __init__(self) -> None:
-            self._prompt = "(mocli) "
+        def __init__(self, prompt: str) -> None:
+            self._prompt = prompt
             self._commands: List[Command] = []
 
-        def prompt(self, prompt: str) -> Self:
-            self._prompt = prompt
+        def __enter__(self) -> CommandLineInterface.Builder:
             return self
 
-        def command(self, command: Command) -> Self:
+        def __exit__(self, exc_type, exc_value, traceback) -> None:
+            pass
+
+        def command(self, command: Command) -> None:
             self._commands.append(command)
-            return self
 
         def build(self) -> CommandLineInterface:
             return CommandLineInterface(self)
 
 
-@commandfn
-def hello_fn(arg):
-    print("Hello, world! " + arg)
-
-
 def run():
-    hello = Command('hello', hello_fn)
-    shell = Shell('ls', 'ls -la')
-    cli = CommandLineInterface.builder() \
-        .prompt("(my-cli) ") \
-        .command(hello) \
-        .command(shell) \
-        .build()
-    cli.cmdloop()
+    hello = Command('hello', lambda arg: print("Hello, World!"))
+    subprocess = Subprocess('ls', 'ls -la')
+
+    with CommandLineInterface.builder(
+        prompt='(my-cli) ',
+    ) as builder:
+        builder.command(hello)
+        builder.command(subprocess)
+
+    builder.build().cmdloop()

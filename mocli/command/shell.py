@@ -1,10 +1,8 @@
 import subprocess
-from mocli.command import Command, commandfn
+from mocli.command import Command
 
 
-class Shell(Command):
+class Subprocess(Command):
 
     def __init__(self, name: str, command: str) -> None:
-        @commandfn
-        def execute(arg): subprocess.run(command.split())
-        super().__init__(name, execute)
+        super().__init__(name, lambda arg: subprocess.run(command.split()))
