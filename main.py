@@ -1,6 +1,5 @@
 from mocli import CommandLineInterface
-from mocli.command.function import Function
-from mocli.command.subprocess import Subprocess
+from mocli.command import Function, Subprocess
 
 if __name__ == '__main__':
     function = Function(name='1', fn=lambda arg: print("Hello, World!" + arg))
