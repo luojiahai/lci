@@ -2,8 +2,6 @@ from __future__ import annotations
 import cmd
 from typing import List
 from mocli.command import Command
-from mocli.command.function import Function
-from mocli.command.subprocess import Subprocess
 
 
 class CommandLineInterface(cmd.Cmd):
@@ -47,16 +45,3 @@ class CommandLineInterface(cmd.Cmd):
 
         def build(self) -> CommandLineInterface:
             return CommandLineInterface(self)
-
-
-def run():
-    function = Function(name='1', fn=lambda arg: print("Hello, World!"))
-    subprocess = Subprocess(name='2', command='ls -la')
-
-    with CommandLineInterface.builder(
-        prompt='(my-cli) ',
-    ) as builder:
-        builder.command(function)
-        builder.command(subprocess)
-
-    builder.build().cmdloop()
