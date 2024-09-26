@@ -20,7 +20,7 @@ class Cmd(cmd.Cmd):
 
 class CommandLineInterface:
 
-    default_prompt = '(mocli) '
+    default_prompt = '> '
 
     default_commands = [
         Command(name='exit', fn=lambda arg: True),
