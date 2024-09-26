@@ -1,5 +1,5 @@
-from mocli import CommandLineInterface
-from mocli.command import Function, Subprocess
+from lindsay import CommandLineInterface
+from lindsay.command import Function, Subprocess
 
 if __name__ == '__main__':
     function = Function(name='1', fn=lambda arg: print("Hello, World!" + arg))

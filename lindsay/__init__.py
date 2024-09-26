@@ -1,7 +1,7 @@
 from __future__ import annotations
 import cmd
 from typing import List
-from mocli.command import Command
+from lindsay.command import Command
 
 
 class Cmd(cmd.Cmd):
