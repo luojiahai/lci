@@ -1,3 +1,3 @@
 # 🕹️ Lindsay
 
-It's a simple library to build line-oriented command interpreters.
+It's a library to build line-oriented command interpreters.
