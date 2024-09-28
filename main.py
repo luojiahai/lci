@@ -1,12 +1,26 @@
 import linewheel as lw
+import argparse
 
 if __name__ == '__main__':
-    function = lw.Function(name='1', fn=lambda arg: print("Hello, World!" + arg))
-    subprocess = lw.Subprocess(name='2', command='ls -la')
+    parser = argparse.ArgumentParser(prog='lw', add_help=False)
+    parser.add_argument('command', nargs='+')
 
     with lw.CommandLineInterface.builder() as builder:
-        builder.command(function)
-        builder.command(subprocess)
+        builder.command(lw.Function(
+            name='hello',
+            fn=lambda arg: print("Hello, World!" + arg),
+            help='help',
+        ))
+        builder.command(lw.Subprocess(
+            name='ls',
+            command='ls -la',
+            help='another help',
+        ))
 
     cli = builder.build()
-    cli.loop()
+    try: 
+        args = parser.parse_args()
+        command = ' '.join(args.__getattribute__('command'))
+        cli.onecmd(line=command)
+    except:
+        cli.help()

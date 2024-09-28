@@ -14,37 +14,31 @@ class Cmd(cmd.Cmd):
         # including the dynamically added
         return dir(self)
 
-    def preloop(self):
-        return self.do_help(None)
-
 
 class CommandLineInterface:
 
-    default_prompt = '> '
-
-    default_commands = [
-        Command(name='exit', fn=lambda arg: True),
-    ]
-
     def __init__(self, builder: Builder) -> None:
         self._cmd = Cmd()
-        self._cmd.prompt = builder._prompt
-        for command in CommandLineInterface.default_commands:
-            setattr(self._cmd, f'do_{command.name}', command.fn)
         for command in builder._commands:
             setattr(self._cmd, f'do_{command.name}', command.fn)
+            setattr(self._cmd, f'help_{command.name}', command.help)
 
     @staticmethod
-    def builder(prompt: str = default_prompt) -> Builder:
-        return CommandLineInterface.Builder(prompt)
+    def builder() -> Builder:
+        return CommandLineInterface.Builder()
     
     def loop(self):
         self._cmd.cmdloop()
 
+    def onecmd(self, line: str):
+        self._cmd.onecmd(line)
+
+    def help(self):
+        return self._cmd.do_help(None)
+
     class Builder:
 
-        def __init__(self, prompt: str) -> None:
-            self._prompt = prompt
+        def __init__(self) -> None:
             self._commands: List[Command] = []
 
         def __enter__(self) -> CommandLineInterface.Builder:
