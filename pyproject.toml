@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "lindsay"
-version = "0.1.1"
+name = "linewheel"
+version = "0.1.0"
 description = ""
 authors = ["luojiahai"]
 readme = "README.md"

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import cmd
 from typing import List
-from lindsay.command import Command
+from linewheel.command import Command, Function, Subprocess
 
 
 class Cmd(cmd.Cmd):
