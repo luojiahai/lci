@@ -2,7 +2,7 @@ import linewheel as lw
 
 
 @lw.command
-def hello(args):
+def hello(args) -> None:
     print("Hello, World!", args)
 
 
