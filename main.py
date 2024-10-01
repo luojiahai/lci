@@ -1,8 +1,9 @@
 import linewheel as lw
+from typing import List
 
 
 @lw.command
-def hello(args) -> None:
+def hello(args: List[str]) -> None:
     print("Hello, World!", args)
 
 
