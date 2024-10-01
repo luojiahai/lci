@@ -15,8 +15,8 @@ class CommandLineInterface:
         subparsers = parser.add_subparsers(dest='command')
         commands = builder._commands
 
-        for name, _ in commands.items():
-            command_parser = subparsers.add_parser(name=name, help=f'{name}')
+        for key in commands.keys():
+            command_parser = subparsers.add_parser(name=key, help=f'{key}')
             command_parser.add_argument('args', nargs='*', help='arguments for the command')
 
         try:
