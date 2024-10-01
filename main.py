@@ -16,5 +16,4 @@ if __name__ == '__main__':
             name='ls',
             line='ls -la',
         ))
-
-    cli = cli.build()
+    cli.build()
