@@ -1,45 +1,30 @@
 from __future__ import annotations
-import cmd
-from typing import List
+from typing import Dict, List
 from linewheel.command import Command, Function, Subprocess
 
 
-class Cmd(cmd.Cmd):
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    def get_names(self):
-        # This returns a list of all methods of the class
-        # including the dynamically added
-        return dir(self)
+def cli() -> CommandLineInterface.Builder:
+    return CommandLineInterface.builder()
 
 
 class CommandLineInterface:
 
     def __init__(self, builder: Builder) -> None:
-        self._cmd = Cmd()
-        for command in builder._commands:
-            setattr(self._cmd, f'do_{command.name}', command.fn)
-            setattr(self._cmd, f'help_{command.name}', command.help)
+        self._commands = builder._commands
+        pass
+
+    @property
+    def commands(self) -> Dict[str, Command]:
+        return self._commands
 
     @staticmethod
     def builder() -> Builder:
         return CommandLineInterface.Builder()
-    
-    def loop(self):
-        self._cmd.cmdloop()
-
-    def onecmd(self, line: str):
-        self._cmd.onecmd(line)
-
-    def help(self):
-        return self._cmd.do_help(None)
 
     class Builder:
 
         def __init__(self) -> None:
-            self._commands: List[Command] = []
+            self._commands: Dict[str, Command] = {}
 
         def __enter__(self) -> CommandLineInterface.Builder:
             return self
@@ -48,7 +33,7 @@ class CommandLineInterface:
             pass
 
         def command(self, command: Command) -> None:
-            self._commands.append(command)
+            self._commands[command.name] = command
 
         def build(self) -> CommandLineInterface:
             return CommandLineInterface(self)

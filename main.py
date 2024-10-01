@@ -2,25 +2,27 @@ import linewheel as lw
 import argparse
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='lw', add_help=False)
-    parser.add_argument('command', nargs='+')
+    parser = argparse.ArgumentParser(prog='lw')
+    subparsers = parser.add_subparsers(dest='command')
+    hello_parser = subparsers.add_parser(name='hello', help='this is a help for hello')
+    hello_parser.add_argument('arg', nargs='+', type=str)
+    ls_parser = subparsers.add_parser(name='ls', help='this is a help for ls')
 
-    with lw.CommandLineInterface.builder() as builder:
-        builder.command(lw.Function(
+    with lw.cli() as cli:
+        cli.command(lw.Function(
             name='hello',
             fn=lambda arg: print("Hello, World!" + arg),
-            help='help',
         ))
-        builder.command(lw.Subprocess(
+        cli.command(lw.Subprocess(
             name='ls',
             command='ls -la',
-            help='another help',
         ))
 
-    cli = builder.build()
-    try: 
+    cli = cli.build()
+    try:
         args = parser.parse_args()
-        command = ' '.join(args.__getattribute__('command'))
-        cli.onecmd(line=command)
-    except:
-        cli.help()
+        command = args.__getattribute__('command')
+        cli.commands[command].fn(args.__getattribute__('arg'))
+    except Exception as e:
+        print(e)
+        parser.print_help()
