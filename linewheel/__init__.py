@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Dict, List
-from linewheel.command import Command, Function, Subprocess
+from linewheel.command import command, Command, Subprocess
 
 
 def cli() -> CommandLineInterface.Builder:
@@ -13,9 +13,8 @@ class CommandLineInterface:
         self._commands = builder._commands
         pass
 
-    @property
-    def commands(self) -> Dict[str, Command]:
-        return self._commands
+    def execute(self, command: str, args: List[str]) -> None:
+        self._commands[command].fn(args)
 
     @staticmethod
     def builder() -> Builder:
