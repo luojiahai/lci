@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Dict, List
+import argparse
+from typing import Dict
 from linewheel.command import command, Command, Subprocess
 
 
@@ -10,11 +11,19 @@ def cli() -> CommandLineInterface.Builder:
 class CommandLineInterface:
 
     def __init__(self, builder: Builder) -> None:
-        self._commands = builder._commands
-        pass
+        parser = argparse.ArgumentParser(prog=builder._name)
+        subparsers = parser.add_subparsers(dest='command')
+        commands = builder._commands
 
-    def execute(self, command: str, args: List[str]) -> None:
-        self._commands[command].fn(args)
+        for name, _ in commands.items():
+            command_parser = subparsers.add_parser(name=name, help=f'{name}')
+            command_parser.add_argument('args', nargs='*', help='arguments for the command')
+
+        try:
+            parsed = parser.parse_args()
+            commands[parsed.__getattribute__('command')].fn(parsed.__getattribute__('args'))
+        except Exception:
+            parser.print_help()
 
     @staticmethod
     def builder() -> Builder:
@@ -22,7 +31,8 @@ class CommandLineInterface:
 
     class Builder:
 
-        def __init__(self) -> None:
+        def __init__(self, name: str = 'lw') -> None:
+            self._name = name
             self._commands: Dict[str, Command] = {}
 
         def __enter__(self) -> CommandLineInterface.Builder:
